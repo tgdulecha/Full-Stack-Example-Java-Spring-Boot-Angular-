@@ -1,0 +1,110 @@
+<div *ngIf="isloggedin; else loginPrompt">
+  <div *ngIf="isAdmin" class="div">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">E-commerce</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" routerLink="/admin/dashboard">dashboard</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/manage">Manage</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/analytics">Analytics</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/category">Add category</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/admin/product">Add Product</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/login']" (click)="authservice.logout()">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div *ngIf="!isAdmin" class="div">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">E-commerce</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/track">Track</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/login">Buy again</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" routerLink="">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/login']" (click)="authservice.logout()">Logout</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+
+<ng-template #loginPrompt>
+  <div class="div">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">E-commerce</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+          aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" routerLink="home">Home</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/login">Login</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+</ng-template>
+
+
+
+
+
+
+<router-outlet></router-outlet>
+<!-- <mat-toolbar color="primary" class="navbar justify-center">
+  <span class="navbar-brand">E-commerce</span>
+  <span class="spacer"></span>
+  <button mat-button routerLink="/login" routerLinkActive="active">Home</button>
+  <button mat-button routerLink="/login" routerLinkActive="active">Track order</button>
+  <button mat-button routerLink="/signup" routerLinkActive="active">Register</button>
+  <button mat-button routerLink="/login" routerLinkActive="active">Login</button>
+</mat-toolbar>
+<router-outlet></router-outlet> -->

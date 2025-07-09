@@ -1,0 +1,130 @@
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AdminService } from '../../service/admin.service';
+
+@Component({
+  selector: 'app-updateproduct',
+  standalone: false,
+  templateUrl: './updateproduct.component.html',
+  styleUrl: './updateproduct.component.css'
+})
+export class UpdateproductComponent {
+
+  productForm: FormGroup;
+  listcategories: any = [];
+  imagePreview!: string | ArrayBuffer | null;
+  selectedFile!: File;
+  existingImage: string | null = null;
+  productId!: string;
+  imgChanged = false;
+  selectedCategoryId: number | null = null;  // Bound to the select box
+
+
+  constructor(private auth: AdminService, private activatedroute: ActivatedRoute, private router: Router, private snackbar: MatSnackBar, private fb: FormBuilder) {
+    this.productForm = this.fb.group({
+      name: ['', [Validators.required]],
+      description: ['', [Validators.required]],
+      price: ['', [Validators.required]],
+      category: ['', [Validators.required]],
+      
+
+    });
+    
+
+    
+  }
+    ngOnInit(): void {
+    this.productId = this.activatedroute.snapshot.params['productId'];
+
+    this.getAllCategories();
+    this.getProductById();
+  }
+
+  getAllCategories() {
+    this.auth.getAllCategories().subscribe(
+      {
+        next: (res) => {
+          this.listcategories = res;
+        },
+        error: (error) => {
+          this.snackbar.open('nothing found. Please try again!', 'Close', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar'],
+          });
+          this.router.navigate(['/admin/product']);
+        }
+      });
+  }
+  onFileSelected(event: any) {
+    this.selectedFile = event.target.files[0];
+    this.previewImage();
+    this.imgChanged = true;
+    this.existingImage = null;
+  }
+  previewImage() {
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imagePreview = reader.result;
+    }
+    reader.readAsDataURL(this.selectedFile);
+
+  }
+  getProductById() {
+    this.auth.getProductById(this.productId).subscribe(
+      {
+        next: (res) => {
+          this.productForm.patchValue(res);
+          this.existingImage = 'data:image/jpeg;base64,' + res.byteImg;
+          this.selectedCategoryId = res.categoryId; // IMPORTANT: set after categories load
+        }
+  
+      });
+  }
+
+  updateProduct(): void {
+    if (this.productForm.valid) {
+      const formData = new FormData();
+      if(this.imgChanged && this.selectedFile){
+              formData.append('img', this.selectedFile);
+
+      }
+      formData.append('name', this.productForm.get('name')?.value);
+      formData.append('description', this.productForm.get('description')?.value);
+      formData.append('price', this.productForm.get('price')?.value);
+      formData.append('categoryId', this.productForm.get('category')?.value);
+      this.auth.updateProduct(this.productId, formData).subscribe({
+        next: (res) => {
+          this.snackbar.open('Product updated successfully', 'Close', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar'],
+          });
+          this.router.navigate(['admin/dashboard']);
+        },
+        error: (err) => {
+          this.snackbar.open('Failed to update product. Try again!', 'Close', {
+            duration: 5000,
+            horizontalPosition: 'center',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar'],
+          });
+        }
+      });
+
+
+    }
+    else {
+
+    }
+
+
+  }
+
+
+
+}
